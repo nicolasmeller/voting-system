@@ -18,11 +18,12 @@
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="text-red-500">Logout</button>
+                        <button type="submit" class="text-cyan-500">Logout</button>
                     </form>
                 @endauth
 
                 @guest
-                    <a href="{{ route('login') }}" class="text-blue-500">Log in</a>
+                    <a href="{{ route('login') }}" class="text-cyan-500">Log in</a>
                 @endguest
             </div>
         </div>

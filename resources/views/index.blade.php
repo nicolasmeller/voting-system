@@ -12,16 +12,24 @@
             
             <div>
                 @auth
-                    <span class="text-gray-900 dark:text-white mr-4">Hello, {{ Auth::user()->name }}</span>
+                    <form action="{{ route('profile') }}" class="inline">
+                        <button type="submit" class="text-cyan-500 mr-4">Profile</button>
+                    </form>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="text-red-500">Logout</button>
+                        <button type="submit" class="text-cyan-500  mr-4">Logout</button>
                     </form>
                 @endauth
 
                 @guest
-                    <a href="{{ route('login') }}" class="text-blue-500 mr-4">Login</a>
-                    <a href="{{ route('register') }}" class="text-blue-500">Register</a>
+
+                <form action="{{ route('register') }}" method="GET"  class="inline">
+                    <button type="submit" class="text-cyan-500 mr-4">Register</button>
+                </form>
+                <form action="{{ route('login') }}" method="GET" class="inline">
+                    <button type="submit" class="text-cyan-500  mr-4">Login</button>
+                </form>
+                
                 @endguest
             </div>
         </div>

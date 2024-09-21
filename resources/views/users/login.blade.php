@@ -15,15 +15,17 @@
             
             <div>
                 @auth
-                    <span class="text-gray-900 dark:text-white mr-4">Hello, {{ Auth::user()->name }}</span>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="text-red-500">Logout</button>
+                        <button type="submit" class="text-cyan-500">Logout</button>
                     </form>
                 @endauth
 
                 @guest
-                    <a href="{{ route('register') }}" class="text-blue-500">Register</a>
+
+                    <form action="{{ route('register') }}" method="GET" class="inline">
+                        <button type="submit" class="text-cyan-500">Register</button>
+                    </form>
                 @endguest
             </div>
         </div>
@@ -46,7 +48,6 @@
                 
                     <form class="space-y-4 md:space-y-6" action="login" method="POST">
                         @csrf
-
                         <div>
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                             <input type="email" name="email" id="email" value="{{ old('email') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@email.com" required="">

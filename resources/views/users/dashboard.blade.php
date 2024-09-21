@@ -5,19 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-4">Welcome to your dashboard</h1>
 
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+  <nav class="bg-white shadow-md dark:bg-gray-800 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-xl font-bold">Voting-System</a>
+        
+        <div>
+            @auth
+
+                <form action="{{ route('profile') }}"  method="GET" class="inline">
+                  <button type="submit" class="text-cyan-500 mr-4">Profile</button>
+                </form>
+
+
+                <form action="{{ route('survey') }}"  method="GET" class="inline">
+                  <button type="submit" class="text-cyan-500 mr-4">Survey</button>
+                </form>
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    <button type="submit" class="text-cyan-500  mr-4">Logout</button>
+                </form>
+            @endauth
+
+
+        </div>
+    </div>
+</nav>
+
+    <div class="container mx-auto p-4">
         <!-- Authenticated user content -->
         @auth
             <p>Hello, {{ Auth::user()->name }}! You are logged in.</p>
-
-            <!-- Log out button -->
-            <form action="logout" method="POST">
                 @csrf
-                <button class="mt-4 px-4 py-2 bg-red-500 text-white rounded" type="submit">Logout</button>
-            </form>
         @endauth
     </div>
 </body>

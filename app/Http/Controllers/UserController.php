@@ -20,7 +20,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:255',
             'last_name' => 'required|max:255',
-            'email' => 'unique:users,email',
+            'email' => 'required|email',
             'password' => 'required|string|min:8|max:255|confirmed',
         ]);
 
@@ -36,41 +36,30 @@ class UserController extends Controller
     }
     
 
-    public function logout()
-    {
-        Auth::logout();
-        return redirect('/')->with('success', 'Logged out successfully!');
-    }
-
-    public function loginView()
-    {
-        return view('users.login');
-    }
-
-
-    public function login(Request $request)
-    {
-        // Validér login data
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        // Authentificer brugeren
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            // Authentication var vellykket
-            return redirect()->intended('dashboard')->with('success', 'Logged in successfully!'); // Skift til ønsket rute
-        }
-
-        // Authentication fejlede
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-    }
-
+  
     public function dashboardView()
     {
-        return view('users.dashboard');
+        return view('dashboard');
+    }
+
+    public function profile(){
+        return view('users.profile');
+    }
+
+    public function update(Request $request){
+        $request->validate([
+            'password' => 'nullable|string|min:8|confirmed', // 'nullable' tillader at password kan være tomt
+        ]);
+            
+        if($request->filled('password')){
+            $request->password = Hash::make($request->password); 
+        }
+
+        $user = Auth::User();
+
+        $user->update(array_filter($request->all()));
+    
+        return redirect()->route('profile')->with('success', 'User have been updated!');
     }
 
 }
