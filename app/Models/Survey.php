@@ -10,7 +10,8 @@ class Survey extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'user_id'
     ];
 
     public function questions()

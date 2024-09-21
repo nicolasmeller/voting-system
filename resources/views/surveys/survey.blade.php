@@ -39,6 +39,8 @@
     </nav>
     @auth
     <section>
+
+  
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -50,7 +52,7 @@
                         @endif
                     </h1>
                     @if ($survey)
-                        <form class="space-y-4 md:space-y-6" action="{{$survey->id}}" method="PUT">
+                        <form class="space-y-4 md:space-y-6" action="{{ route('survey_update', ['id' => $survey->id ]) }}" method="post">
                     @else
                         <form class="space-y-4 md:space-y-6" action="{{ route('survey') }}" method="POST">
                     @endif
@@ -69,13 +71,16 @@
                             @error('survey_description')
                             <span style="color: red;">{{ $message }}</span>
                             @enderror
-                        </div>                                               
-                        <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create survey</button>
-                        @if(session('success'))
-                            <div class="text-green-500 text-center mt-4">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        </div>   
+                        
+                        <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            @if ($survey)
+                                Update Survay
+                            @else
+                                Create Survay
+                            @endif
+                        </button>
+                    
                     </form>
                 </div>
             </div>

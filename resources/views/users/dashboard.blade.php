@@ -21,7 +21,7 @@
                 </form>
 
 
-                <form action="{{ route('survey') }}"  method="GET" class="inline">
+                <form action="{{ route('surveys') }}"  method="GET" class="inline">
                   <button type="submit" class="text-cyan-500 mr-4">Survey</button>
                 </form>
                 <form action="{{ route('logout') }}" method="POST" class="inline">

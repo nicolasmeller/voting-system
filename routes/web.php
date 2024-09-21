@@ -27,9 +27,12 @@ Route::post('/register', [UserController::class, 'create'])->name('register');
 Route::middleware('auth')->group(function() {
     
     Route::get('/survey', [SurveyController::class, 'get'])->name('survey');
+    Route::get('/surveys', [SurveyController::class, 'list'])->name('surveys');
+
     Route::post('/survey', [SurveyController::class, 'create'])->name('survey');
     Route::get('/survey/{id}', [SurveyController::class, 'show'])->name('survey_show');
-    Route::put('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
+    Route::post('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
+    
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::put('/update', [UserController::class, 'update'])->name('update');
