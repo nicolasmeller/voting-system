@@ -1,71 +1,73 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @vite('resources/css/app.css')
 
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
 
-    <nav class="bg-white shadow-md dark:bg-gray-800 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-bold">Voting-System</a>
-            
-            <div>
-                @auth
-                  <form action="{{ route('profile') }}"  method="GET" class="inline">
-                    <button type="submit" class="text-cyan-500 mr-4">Profile</button>
-                  </form>
-                  @csrf
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        <button type="submit" class="text-cyan-500">Logout</button>
-                    </form>
-                    @csrf
-                @endauth
 
-                @guest
-
-                    <form action="{{ route('login') }}" method="GET" class="inline">
-                        <button type="submit" class="text-cyan-500">Log In</button>
-                    </form>
-
-                    <form action="{{ route('register') }}" method="GET" class="inline">
-                        <button type="submit" class="text-cyan-500">Register</button>
-                    </form>
-                @endguest
-            </div>
-        </div>
-    </nav>
+@extends('layouts.app')
+@section('title', 'Surveys')
+  
+@section('content')
     @auth
-    <div class="container">
-        <h1>Surveys List</h1>
-    
         <!-- Tjek om der er nogen surveys -->
+        <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+            <div class="pt-5 pb-5">
+            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Surveys List</p>
+
+
+            <form class="pt-5" action="{{ route('survey') }}" method="GET">
+                @csrf
+                <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-cyan-700 rounded-lg hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800">
+                  Create survey
+              </button>
+              </form>
+
+
+            </div>
+            @if(session('success'))
+            <div class="text-green-500 text-center mt-4 p-5">
+                {{ session('success') }}
+             </div>
+            @endif
+
         @if($surveys->isEmpty())
             <p>No surveys available.</p>
         @else
-            <ul>
-                <!-- Iterér over hver survey og vis data -->
-                @foreach($surveys as $survey)
-                    <li>
-                    <form class="space-y-4 md:space-y-6" action="{{ route('survey_show', ['id'=>$survey->id]) }}" method="GET">
+            <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+
+                        @foreach($surveys as $survey)
+
                     @csrf
-                    <h3>{{ $survey->name }}</h3>
-                    <p>{{ $survey->description }}</p>
-                    <p><strong>Created at:</strong> {{ $survey->created_at->format('d-m-Y') }}</p>
-                                                        
-                        <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Update survey</button>
-                    </form>
-                </li>
+   
+                        <li class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
+                        <form class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" action="{{ route('survey_show', ['id'=>$survey->id]) }}" method="GET">
+
+                          <div class="flex flex-1 flex-col p-3">
+                            <h3 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white truncate text-left	">{{ $survey->name }}</h3>
+                            <dl class="mt-1 flex flex-grow flex-col justify-between text-left	">
+                            
+                              <dd class="text-sm text-gray-500">  <span>Description: </span>{{ $survey->description }}</dd>
+                            </dl>
+                          </div>
+
+                          <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-cyan-700 rounded-lg hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800">
+                            Update survey
+                        </button>
+                        </form>
+
+                        </li>
+                      
+                        <!-- More people... -->
+
+
+
 
                 @endforeach
+
             </ul>
+            </div>
+        </div>
+            </div>
         @endif
     </div>
+    </div>
     @endauth
-</body>
-<script src="../path/to/flowbite/dist/flowbite.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
-</html>
+
+@endsection

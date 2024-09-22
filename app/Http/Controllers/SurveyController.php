@@ -22,7 +22,7 @@ class SurveyController extends Controller
             'description' => $request->get('survey_description'),
         ]);
         
-        return redirect()->route('survey_show', ['id'=> $survey->id])->with('success', 'Survey is created successfully!');
+        return redirect()->route('surveys')->with('success', 'Survey is created successfully!');
     }
 
     
@@ -43,7 +43,9 @@ class SurveyController extends Controller
 
     }
     public function show (Request $request, $id){
-        $survey = Survey::find($id ||$request->id );
+        
+        $survey = Survey::find($id);
+
         return view('surveys.survey', ['survey' => $survey ]);
     }
 

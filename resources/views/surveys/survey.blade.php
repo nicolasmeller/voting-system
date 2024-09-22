@@ -1,54 +1,23 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @vite('resources/css/app.css')
 
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
 
-    <nav class="bg-white shadow-md dark:bg-gray-800 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-bold">Voting-System</a>
-            
-            <div>
-                @auth
-                  <form action="{{ route('profile') }}"  method="GET" class="inline">
-                    <button type="submit" class="text-cyan-500 mr-4">Profile</button>
-                  </form>
-                  @csrf
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        <button type="submit" class="text-cyan-500">Logout</button>
-                    </form>
-                    @csrf
-                @endauth
 
-                @guest
-
-                    <form action="{{ route('login') }}" method="GET" class="inline">
-                        <button type="submit" class="text-cyan-500">Log In</button>
-                    </form>
-
-                    <form action="{{ route('register') }}" method="GET" class="inline">
-                        <button type="submit" class="text-cyan-500">Register</button>
-                    </form>
-                @endguest
-            </div>
-        </div>
-    </nav>
-    @auth
-    <section>
+@extends('layouts.app')
 
   
+@section('content')
+    @auth
+    <section>
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
                         @if ($survey)
                         Update an Survey
+                        @section('title', 'Survey')
                         @else
                         Create an Survey
+                        @section('title', 'Create an Survey')
+
                         @endif
                     </h1>
                     @if ($survey)
@@ -87,7 +56,6 @@
         </div>
     </section>
     @endauth
-</body>
-<script src="../path/to/flowbite/dist/flowbite.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
-</html>
+
+@endsection
+

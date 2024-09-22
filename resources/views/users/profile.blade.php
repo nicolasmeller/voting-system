@@ -1,37 +1,10 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @vite('resources/css/app.css')
-</head>
 
+        @extends('layouts.app')
 
-<body class="bg-gray-50 dark:bg-gray-900">
-
-  <nav class="bg-white shadow-md dark:bg-gray-800 p-4">
-    <div class="container mx-auto flex justify-between items-center">
-        <a href="/" class="text-xl font-bold">Voting-System</a>
+        @section('title', 'Log in')
         
-        <div>
-            @auth
-               <form action="{{ route('profile') }}" method="GET" class="inline">
-                    <button type="submit" class="text-cyan-500 mr-4">Profile</button>
-                </form>
-
-                  <form action="{{ route('logout') }}" method="POST" class="inline">
-                    <button type="submit" class="text-cyan-500 mr-4">Logout</button>
-                </form>
-            @endauth
-
-
-        </div>
-    </div>
-</nav>
-
-    <div class="container mx-auto">
+        @section('content')
         @auth
-            <section>
                 <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -39,7 +12,9 @@
                                 Update account
                             </h1>
                             
-                            <form class="space-y-4 md:space-y-6" action="{{ route('update') }}" method="PUT">
+                            <form class="space-y-4 md:space-y-6" action="{{ route('update') }}" method="POST">
+                                @method('PUT')
+
                                 <div>
                                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
                                     <input type="name" name="name" id="name" value="{{ Auth::user()->name }}"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="John" required="">
@@ -88,8 +63,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
         @endauth
-    </div>
-</body>
-</html>
+        @endsection
+        
+        
