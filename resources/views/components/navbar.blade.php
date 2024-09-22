@@ -5,14 +5,14 @@
         
         <div>
             @auth
+            <form action="{{ route('surveys') }}" method="GET" class="inline">
+                @csrf
+                <button type="submit" class="text-cyan-500  mr-4">Surveys</button>
+            </form>
               <form action="{{ route('profile') }}"  method="GET" class="inline">
                   @csrf
                 <button type="submit" class="text-cyan-500 mr-4">Profile</button>
               </form>
-              <form action="{{ route('surveys') }}" method="GET" class="inline">
-                @csrf
-                <button type="submit" class="text-cyan-500  mr-4">Surveys</button>
-            </form>
               <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="text-cyan-500  mr-4">Logout</button>
