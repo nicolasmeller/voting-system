@@ -42,15 +42,14 @@ class SurveyController extends Controller
         return redirect()->route('survey_show', ['id'=> $survey->id])->with('success', 'Survey is created successfully!');
 
     }
-    public function show (Request $request, $id){
+    public function show ( $id){
         
-        $survey = Survey::find($id);
+        $survey = Survey::where('id', $id)->where('user_id', Auth::user()->id)->first();
 
         return view('surveys.survey', ['survey' => $survey ]);
     }
 
     public function get(){
-        
         return view('surveys.survey', ['survey' => null ]);
     }    
 

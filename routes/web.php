@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use App\Models\Survey;
@@ -33,6 +34,14 @@ Route::middleware('auth')->group(function() {
     Route::get('/survey/{id}', [SurveyController::class, 'show'])->name('survey_show');
     Route::post('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
     
+
+
+    
+    Route::post('/survey/{survey}/questions', [QuestionController::class, 'create'])->name('question_add');
+    Route::get('/survey/{survey}/questions', [QuestionController::class, 'show'])->name('questions');
+    
+
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::put('/update', [UserController::class, 'update'])->name('update');
