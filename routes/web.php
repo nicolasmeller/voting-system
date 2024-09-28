@@ -26,16 +26,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/register', [UserController::class, 'registerView'])->name('register');
 Route::post('/register', [UserController::class, 'create'])->name('register');
 
-
-
-
-
-Route::middleware('auth')->group(function() {
-    Route::get('test/api/basic/auth', [TestController::class, 'getAuth']);
-    
-
-});
-
 Route::middleware('auth')->group(function() {
     
     Route::get('/survey', [SurveyController::class, 'get'])->name('survey');
