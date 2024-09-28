@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('answer')->nullable();
             $table->string('type')->nullable();
             $table->timestamps();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
     }
 

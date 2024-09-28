@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
@@ -55,9 +56,8 @@ class UserController extends Controller
             $request->password = Hash::make($request->password); 
         }
 
-        $user = Auth::User();
 
-        $user->update(array_filter($request->all()));
+        Auth::User()->update(array_filter($request->all()));
     
         return redirect()->route('profile')->with('success', 'User have been updated!');
     }

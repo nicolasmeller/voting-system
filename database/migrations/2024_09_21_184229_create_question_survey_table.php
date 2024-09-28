@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('survey_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
     }
 

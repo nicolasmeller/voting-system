@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use App\Models\Survey;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -29,5 +30,18 @@ class QuestionController extends Controller
 
     public function show($survey){
         return view('questions.question', ['survey' => $survey, 'question' => null ]);
+    }
+ 
+    public function delete ($survey_id, $id){
+        try{
+
+            Survey::where('id', $survey_id)->where('user_id', Auth::User()->id)->first()->questions->where('id', $id)->first()->delete();
+            return redirect()->route('survey_show', ['id'=> $survey_id])
+            ->with('success', 'Question deleted!')->http_response_code("400");
+        }catch(Exception $e){
+            return redirect()->route('survey_show', ['id'=> $survey_id])
+            ->with('error', 'Question are not deleted! Error: ' . $e  );
+        }
+
     }
 }

@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
     }
 

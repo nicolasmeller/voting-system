@@ -142,12 +142,15 @@
                                     </td>
 
                                     <td class="px-6 py-4">
-                                        <form action="{{ route('survey_show', ['id' => $survey->id]) }}" method="GET">
+                                        <form action="{{ route('question_delete', ['survey_id' => $survey, 'id' => $question->id]) }}" method="POST">
                                             @csrf
+
+                                            <input type="hidden" name="_method" value="DELETE">
                                             <button type="submit"
-                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                Update
+                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                                Delete
                                             </button>
+
                                         </form>
                                     </td>
                                 </tr>

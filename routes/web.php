@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
-use App\Models\Survey;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +27,15 @@ Route::get('/register', [UserController::class, 'registerView'])->name('register
 Route::post('/register', [UserController::class, 'create'])->name('register');
 
 
+
+
+
+Route::middleware('auth')->group(function() {
+    Route::get('test/api/basic/auth', [TestController::class, 'getAuth']);
+    
+
+});
+
 Route::middleware('auth')->group(function() {
     
     Route::get('/survey', [SurveyController::class, 'get'])->name('survey');
@@ -37,9 +48,11 @@ Route::middleware('auth')->group(function() {
 
 
     
-    Route::post('/survey/{survey}/questions', [QuestionController::class, 'create'])->name('question_add');
-    Route::get('/survey/{survey}/questions', [QuestionController::class, 'show'])->name('questions');
-    
+    Route::post('/survey/{survey}/question', [QuestionController::class, 'create'])->name('question_add');
+    Route::delete('/survey/{survey_id}/question/{id}', [QuestionController::class, 'delete'])->name('question_delete');
+    Route::put('/question/{id}', [QuestionController::class, 'update'])->name('question_update');
+    Route::get('/survey/{survey}/question', [QuestionController::class, 'show'])->name('questions');
+
 
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

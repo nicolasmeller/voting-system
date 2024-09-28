@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
 
 
@@ -29,6 +32,9 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -38,6 +44,9 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->softDeletes('deleted_at', precision: 0);
+
+
         });
     }
 
