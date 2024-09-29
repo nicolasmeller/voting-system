@@ -34,16 +34,11 @@ Route::middleware('auth')->group(function() {
     Route::post('/survey', [SurveyController::class, 'create'])->name('survey');
     Route::get('/survey/{id}', [SurveyController::class, 'show'])->name('survey_show');
     Route::post('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
-    
 
-
-    
     Route::post('/survey/{survey}/question', [QuestionController::class, 'create'])->name('question_add');
     Route::delete('/survey/{survey_id}/question/{id}', [QuestionController::class, 'delete'])->name('question_delete');
     Route::put('/question/{id}', [QuestionController::class, 'update'])->name('question_update');
     Route::get('/survey/{survey}/question', [QuestionController::class, 'show'])->name('questions');
-
-
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
