@@ -12,29 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function registerView()
-    {
-        return view('users.register');
-    }
-    public function create(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email',
-            'password' => 'required|string|min:8|max:255|confirmed',
-        ]);
 
 
-       User::create([
-        'name' => $request->get('name'),
-        'last_name' => $request->get('last_name'),
-        'email' => $request->get('email'),
-        'password' => Hash::make($request->get('password')),
-       ]);
-       
-       return redirect()->route('login')->with('success', 'User created successfully! You can now log in!');
-    }
     
 
   

@@ -2,38 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function logout()
-    {
-        Auth::logout();
-        return redirect('/')->with('success', 'Logged out successfully!');
-    }
 
-    public function loginView()
+    public function create(Request $request)
     {
-        return view('users.login');
+       
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|max:255|confirmed',
+        ] );
+
+        if ($validator->fails()) { 
+            $response = $validator->errors();
+            return response()->json(['error' =>$response], 401);   
+        }   
+
+        $user = User::create([
+            'name' => $request->get('name'),
+            'last_name' => $request->get('last_name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+        ]);
+
+        $user->createToken($request->email)->plainTextToken;
+
+        return response()->json([
+            'success' => [
+                'name' => $user->name,
+                'last' => $user->last_name,
+                'email' => $user->email,
+                'token' =>$token
+            ]
+        ], 201);
+
     }
 
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+    // Valider input
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        // Forsøg at finde brugeren baseret på email
+        $user = User::where('email', $request->email)->first();
 
-            return redirect()->route('dashboard')->with('success', 'Logged in successfully!'); 
+        // Tjek om bruger findes, og om password matcher
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+        // Opret et nyt token til brugeren
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        // Returner tokenet som en JSON response
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => $token
         ]);
     }
 }
