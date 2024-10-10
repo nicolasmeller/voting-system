@@ -6,7 +6,7 @@ use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-class SurveyController extends Controller
+class SurveyController
 {
     public function create(Request $request){
 
@@ -43,7 +43,7 @@ class SurveyController extends Controller
             'survey_name' => 'required|max:255',
             'survey_description' => 'nullable|max:255',
         ]);
-        $survey = Survey::where('id', $id)->where('user_id', Auth::user()->id)->first();
+        $survey = Survey::where('id', $id)->where('user_id',  $request->user()->id)->first();
   
         $survey->update([
             'name' => $request->get('survey_name'),
@@ -54,12 +54,12 @@ class SurveyController extends Controller
     }
 
     public function get(Request $request, $id){
-        $survey = Survey::where('id', $id)->where('user_id', auth('sanctum')->user()->id)->first();
+        $survey = Survey::where('id', $id)->where('user_id', $request->user()->id)->with('questions')->first();
 
         return response()->json($survey);  
     }
     public function list(){
-        $surveys = Survey::where("user_id",  Auth::user()->id)->get();
+        $surveys = Survey::where("user_id",  Auth::user()->id)->with('questions')->get();
         return response()->json($surveys);
     }
 }

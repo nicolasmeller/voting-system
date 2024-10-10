@@ -8,15 +8,20 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class QuestionController extends Controller
+class QuestionController
 {
-    public function create(Request $request, Survey $survey){
+    public function create(Request $request){
 
         $request->validate([
+            'survey_id'=> 'required',
             'question' => 'required|max:255',
             'answer' => 'nullable|max:255',
             'type' => 'nullable|max:255',
         ]);
+
+        if(!$survey = Survey::where('id', $request->survey_id)->where('user_id', $request->user()->id)->first()){
+            return response()->json(['error'=> 'Could not add question to this survey!'], 400);
+        }
 
         $survey->questions()->create([
             'question' => $request->get('question'),
@@ -24,23 +29,36 @@ class QuestionController extends Controller
             'type' => $request->get('type'),
         ])->save();
 
-        return redirect()->route('survey_show', ['id'=> $survey->id])
-        ->with('success', 'Question are added!');
-    }
+            return response()->json(['success'=> 'Question add to survey']);
 
-    public function show($survey){
-        return view('questions.question', ['survey' => $survey, 'question' => null ]);
+    }
+    public function update(Request $request, Int $id){
+
+
+        $question = Question::findOrFail($id);
+
+        if(!$question->surveys()->where('user_id', $request->user()->id)->first()){
+            return response()->json(['error'=> 'Could not update question to this survey!'], 400);
+        }
+  
+        $question->update($request->only(['question', 'answer', 'type']));
+
+        return response()->json(['success'=> 'Question updated!']);
     }
  
-    public function delete ($survey_id, $id){
+    public function delete (Request $request, $id){
         try{
+            $question = Question::findOrFail($id);
+            $survey = $question->surveys()->where('user_id', $request->user()->id)->first();
+            if($survey){
+                $question->delete();
+                return response()->json(['success'=> 'Question deleted!']);
+            }
+            return response()->json(['error'=> 'Could not delete the Question'], 400);
 
-            Survey::where('id', $survey_id)->where('user_id', Auth::User()->id)->first()->questions->where('id', $id)->first()->delete();
-            return redirect()->route('survey_show', ['id'=> $survey_id])
-            ->with('success', 'Question deleted!')->http_response_code("400");
         }catch(Exception $e){
-            return redirect()->route('survey_show', ['id'=> $survey_id])
-            ->with('error', 'Question are not deleted! Error: ' . $e  );
+            return response()->json(['error'=> 'Could not delete the Question!'], 400);
+
         }
 
     }

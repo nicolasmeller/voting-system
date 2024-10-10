@@ -7,8 +7,9 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
 
-class AuthController extends Controller
+class AuthController
 {
 
     public function create(Request $request)
@@ -23,7 +24,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) { 
             $response = $validator->errors();
-            return response()->json(['error' =>$response], 401);   
+            return response()->json(['error' =>$response], 400);   
         }   
 
         $user = User::create([
@@ -71,5 +72,39 @@ class AuthController extends Controller
             'message' => 'Login successful',
             'token' => $token
         ]);
+    }
+
+
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'message' => 'Logout successful',
+            ]);
+        } catch (Throwable $e ){
+                return response()->json([
+                'message' => "Didn't Logout correctly",
+                'error' => $e
+            ],400);
+        }
+
+
+    }
+
+
+    public function logout_all(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'message' => 'Logout successful',
+            ]);
+        } catch (Throwable $e ){
+                return response()->json([
+                'message' => "Didn't Logout correctly",
+                'error' => $e
+            ],400);
+        }
     }
 }
