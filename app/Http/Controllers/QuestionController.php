@@ -7,17 +7,24 @@ use App\Models\Survey;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Validator;
 
 class QuestionController
 {
     public function create(Request $request){
 
-        $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'survey_id'=> 'required',
             'question' => 'required|max:255',
             'answer' => 'nullable|max:255',
             'type' => 'nullable|max:255',
         ]);
+        
+        if ($validator->fails()) { 
+            $response = $validator->errors();
+            return response()->json(['error' =>$response], 400);   
+        }   
 
         if(!$survey = Survey::where('id', $request->survey_id)->where('user_id', $request->user()->id)->first()){
             return response()->json(['error'=> 'Could not add question to this survey!'], 400);

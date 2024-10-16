@@ -14,18 +14,6 @@ class UserController
 {
 
 
-    
-
-  
-    public function dashboardView()
-    {
-        return view('dashboard');
-    }
-
-    public function profile(){
-        return view('users.profile');
-    }
-
     public function update(Request $request){
         $request->validate([
             'password' => 'nullable|string|min:8|confirmed', // 'nullable' tillader at password kan være tomt
