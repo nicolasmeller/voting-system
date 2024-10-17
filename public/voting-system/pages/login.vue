@@ -48,34 +48,47 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
+import { ref } from 'vue';
+import { useCookie } from '#imports';
+import { useRouter } from 'vue-router';  // Importer useRouter
+const authToken = useCookie('auth-token', {
+  secure: true,
+  sameSite: 'strict',
+});
 
-const email = ref('')
-const password = ref('')
-const error = ref(null)
-const success = ref(null)
+const router = useRouter();  // Initialiser router
+const email = ref('');
+const password = ref('');
+const error = ref(null);
+const success = ref(null);
 
 const handleSubmit = async () => {
   try {
-    error.value = null // Clear previous errors
-    success.value = null // Clear previous success messages
+    // Nulstil tidligere fejl og succesbeskeder
+    error.value = null;
+    success.value = null;
+
+    // Send login request
+    const res = await $fetch('http://127.0.0.1:8000/api/login', {
+      method: 'post',
+      body: { 
+        email: email.value,
+        password: password.value,
+      }    
+    });
+
+    router.push('/');
+    // Antag, at API'en returnerer et token
+    authToken.value = res.token;
+    success.value = 'Login successful!';
 
 
-    const { data } = useFetch('http://127.0.0.1:8000/api/login', {
-        method: 'post',
-        body: { 
-          email: email.value,
-          password: password.value,
-        }    })
-
-
-      success.value = data.value.message
- 
-
-
-    // Assuming the API returns a success message
   } catch (err) {
-    success.value = response.data.message  }
-}
+    // Håndter fejl fra login request
+    error.value = err;
+    authToken.value = null;
+    console.error(error.value);
+  }
+};
+
 </script>

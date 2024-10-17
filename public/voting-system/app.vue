@@ -9,7 +9,15 @@
 </template>
 
 <script setup>
-// Ingen speciel konfiguration nødvendig her
+import { useCookie } from '#imports';
+
+const authToken = useCookie('auth-token', {
+  secure: true,
+  sameSite: 'Strict', 
+});
+
+
+
 </script>
 
 <style scoped>
