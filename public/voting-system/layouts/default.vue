@@ -1,18 +1,14 @@
 <template>
   <div>
       <Navbar></Navbar>
-    <main>
+    <main class="min-h-screen bg-white py-1 antialiased dark:bg-gray-900 md:py-8">
       <!-- Dette er, hvor siden bliver rendret -->
       <slot />
     </main>
-    <footer>
-    </footer>
+
   </div>
 </template>
 
 <style scoped>
-header, footer {
-  background-color: #f5f5f5;
-  padding: 10px;
-}
+
 </style>

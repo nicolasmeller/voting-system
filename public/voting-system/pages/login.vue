@@ -1,13 +1,13 @@
 <template>
   <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Log in</h2>
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">Log in</h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900  dark:text-white">Email address</label>
           <div class="mt-2">
             <input 
               v-model="email"
@@ -23,7 +23,7 @@
 
         <div>
           <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+            <label for="password" class="block text-sm font-medium leading-6 text-gray-900  dark:text-white">Password</label>
           </div>
           <div class="mt-2">
             <input 
@@ -38,7 +38,7 @@
           </div>
         </div>
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-slate-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800">Log in</button>
+          <button type="submit" class="flex w-full justify-center rounded-md bg-slate-900 dark:bg-slate-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800">Log in</button>
         </div>
       </form>
       <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
