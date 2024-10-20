@@ -21,19 +21,22 @@ class SurveyController
             return response()->json(['error' =>$response], 401);   
         }   
         $user_id =   Auth::user()->id;
-
         
-        $survey = Survey::create([
-            'user_id'=>  $user_id,
-            'name' => $request->get('name'),
-            'description' => $request->get('description'),
+        $survey = Survey::create( [
+            "user_id" => $user_id,
+            "name"=> $request->name,
+            "description"=> $request->description,
+            "created_at"=>$request->created_at,
+            "updated_at"=>$request->updated_at,
         ]);
+
+
         return response()->json([
             "name"=> $survey->name,
             "description"=> $survey->description,
             "created_at"=>$survey->created_at,
             "updated_at"=>$survey->updated_at,
-        ], 401);
+        ], 200);
     }
 
     

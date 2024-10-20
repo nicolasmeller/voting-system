@@ -18,28 +18,37 @@
       <div class="w-full max-w-7xl px-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-4xl font-extrabold dark:text-slate-200">Surveys</h2>
-          <button type="submit" @click="createSurvey()"
-            class="text-white hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800">Create</button>
+          
+          <!-- Search Input Field -->
+          <div class="flex items-center space-x-4">
+            <input type="text" v-model="searchQuery" placeholder="Search surveys..." 
+              class="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+            <button type="submit" @click="createSurvey()"
+              class="text-white hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800">
+              Create
+            </button>
+          </div>
         </div>
-        <div :items="surveys" class="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        
+        <!-- Check if there are filtered results -->
+        <div v-if="filteredSurveys.length > 0"  class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
               <tr>
-                <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3">Description</th>
-                <th scope="col" class="px-6 py-3">Questions</th>
-                <th scope="col" class="px-6 py-3">Created</th>
-                <th scope="col" class="px-6 py-3"></th>
+                <th scope="col" class="px-6 py-3 w-1/5">Name</th>
+                <th scope="col" class="px-6 py-3 w-2/5">Description</th>
+                <th scope="col" class="px-6 py-3 w-1/5">Questions</th>
+                <th scope="col" class="px-6 py-3 w-1/5">Created</th>
+                <th scope="col" class="px-6 py-3 w-1/5"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="survey in surveys" :key="survey.id"
+              <tr v-for="survey in filteredSurveys" :key="survey.id"
                 class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 truncate dark:text-white">
                   {{ survey.name }}
                 </th>
-                <td class="px-6 py-4">{{ survey.description }}</td>
+                <td class="px-6 py-4 truncate">{{ survey.description }}</td>
                 <td class="px-6 py-4 text-center">{{ survey.questions.length }}</td>
                 <td class="px-6 py-4">{{ formatDate(survey.created_at) }}</td>
                 <td class="px-6 py-4">
@@ -52,6 +61,24 @@
             </tbody>
           </table>
         </div>
+
+        <!-- No Matching Results Message -->
+        <p v-else class="text-gray-500 mt-10 text-center">There is no available survey on that search criteria.</p>
+
+        <!-- Pagination Controls -->
+        <div v-if="filteredSurveys.length > 0" class="flex justify-center items-center mt-4 space-x-2">
+          <button @click="prevPage" :disabled="currentPage === 1"
+            class="px-4 py-2 text-white bg-slate-600 hover:bg-slate-700 rounded disabled:bg-slate-400"
+            :class="{ 'cursor-not-allowed opacity-50': currentPage === 1 }">
+            Previous
+          </button>
+          <span class="text-gray-600">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages"
+            class="px-4 py-2 text-white bg-slate-600 hover:bg-slate-700 rounded disabled:bg-slate-400"
+            :class="{ 'cursor-not-allowed opacity-50': currentPage === totalPages }">
+            Next
+          </button>
+        </div>
       </div>
     </transition>
 
@@ -62,72 +89,108 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useCookie } from '#imports';
-import { useRouter } from 'vue-router';  // Importer useRouter
-import moment from 'moment'; // Importer moment
+import { useRouter } from 'vue-router';  
+import moment from 'moment';
 
-// Declare refs for surveys and loading state
 const surveys = ref([]);
-const isLoading = ref(true); // Initialize loading state
+const isLoading = ref(true); 
+const currentPage = ref(1);  
+const surveysPerPage = 10;   
+const searchQuery = ref(''); // New ref for search input
 
-// Get the auth token from cookies
 const authToken = useCookie('auth-token');
-const router = useRouter();  // Initialiser router
+const router = useRouter();  
 
-// Define the function to fetch surveys
 const getSurveys = async () => {
   try {
     const res = await $fetch('http://127.0.0.1:8000/api/survey', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${authToken.value}`, // Add Bearer token
+        'Authorization': `Bearer ${authToken.value}`,
       },
     });
 
-    // Update surveys with the response data
-    surveys.value = res; // Assuming res contains the survey data
-    console.log(surveys.value); // Log surveys to console for debugging
+    surveys.value = res; 
   } catch (error) {
     console.error('Failed to fetch surveys:', error);
   } finally {
-    isLoading.value = false; // Set loading to false after the fetch
+    isLoading.value = false; 
   }
 };
 
-// Format date function
+const filteredSurveys = computed(() => {
+  return surveys.value.filter(survey =>
+    survey.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    survey.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  ).slice((currentPage.value - 1) * surveysPerPage, currentPage.value * surveysPerPage);
+});
+
+const totalPages = computed(() => {
+  const filteredCount = surveys.value.filter(survey =>
+    survey.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    survey.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  ).length;
+  
+  return Math.ceil(filteredCount / surveysPerPage);
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 const formatDate = (date) => {
-  console.log(date); // Log datoen for debugging
-  return moment(date).format('DD/MM/YYYY'); // Brug format med AM/PM
+  return moment(date).format('DD/MM/YYYY'); 
 }
+
 const createSurvey = () => {
   router.push({ path: "/survey"});
 };
 
-// Function to fetch a specific survey
 const getSurvey = (id) => {
   router.push({ path: "/survey", query: { id: id } });
 };
 
-// Fetch surveys when the component is mounted
 onMounted(() => {
   getSurveys();
 });
 </script>
 
+
 <style scoped>
-/* Fade transition styles */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 1s;
 }
 
 .fade-enter,
-.fade-leave-to
-/* .fade-leave-active in <2.1.8 */
-  {
+.fade-leave-to {
   opacity: 0;
 }
 
-/* Add any component-specific styles here */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Make table layout fixed to maintain consistent column width */
+.table-fixed {
+  table-layout: fixed;
+}
+
+/* Ensures text in cells is properly truncated */
+th, td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>
