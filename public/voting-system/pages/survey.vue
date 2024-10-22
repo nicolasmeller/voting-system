@@ -79,7 +79,7 @@ const createSurvey = async () => {
   console.log('Creating Survey with Name:', name.value);
   console.log('Creating Survey with Description:', description.value);
   try {
-    const res = await $fetch(`http://127.0.0.1:8000/api/survey/`, {
+    const res = await $fetch(`http://127.0.0.1:8000/api/survey`, {
       method: 'POST',
       body: { 
         name: name.value,
@@ -115,7 +115,7 @@ const getSurvey = async (surveyId = route.query.id) => {
       },
     });
 
-    if (res) {
+    if (res.name) {
       survey.value = res;
       name.value = res.name; // Pre-fill form with existing survey data
       description.value = res.description;

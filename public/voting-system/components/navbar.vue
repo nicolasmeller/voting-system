@@ -114,7 +114,6 @@ onMounted(() => {
 // Navigation items
 const navigation = [
   { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
   { name: 'Survey', href: '/surveys' },
 ];
 
