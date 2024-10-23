@@ -32,6 +32,7 @@ class SurveyController
 
 
         return response()->json([
+            "id" => $survey->id,
             "name"=> $survey->name,
             "description"=> $survey->description,
             "created_at"=>$survey->created_at,
@@ -43,14 +44,14 @@ class SurveyController
     public function update(Request $request, $id){
 
         $request->validate([
-            'survey_name' => 'required|max:255',
-            'survey_description' => 'nullable|max:255',
+            'name' => 'required|max:255',
+            'description' => 'nullable|max:255',
         ]);
         $survey = Survey::where('id', $id)->where('user_id',  $request->user()->id)->first();
-  
+      
         $survey->update([
-            'name' => $request->get('survey_name'),
-            'description' => $request->get('survey_description'),
+            'name' => $request->name,
+            'description' => $request->description
         ]);
         $survey->save();
         return response()->json($survey);
