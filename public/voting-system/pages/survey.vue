@@ -11,7 +11,7 @@
     </div>
 
     <!-- Notification Section -->
-    <div v-if="showNotification" class="">
+    <div v-if="showNotification">
       <Notification :message="notificationMessage" :show="showNotification" @close="showNotification = false" />
     </div>
 

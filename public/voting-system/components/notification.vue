@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="w-96 top-0 right-2" style="position: absolute;">
+  <div v-if="show" class="w-96 top-0 right-4" style="position: absolute;">
     <div class="flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3 rounded shadow-lg" role="alert">
       <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <path
