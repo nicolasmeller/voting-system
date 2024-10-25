@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-100 bg-opacity-75">
+    <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none">
         <path fill="#1e293b"
           d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
@@ -10,19 +10,21 @@
       </svg>
     </div>
 
-      <div v-if="showNotification" class="fixed top-0 right-0  ">
-      <Notification :message="notificationMessage" :show="showNotification" @close="showNotification = false"  />
+    <!-- Notification Section -->
+    <div v-if="showNotification" class="">
+      <Notification :message="notificationMessage" :show="showNotification" @close="showNotification = false" />
+    </div>
 
-      </div>
     <div v-if="!isLoading">
       <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div class="mx-auto max-w-5xl">
           <div v-if="hasError" class="min-h-screen flex flex-col items-center justify-start py-10">
             <p class="text-gray-500 mt-10">Ingen survey tilgængelige.</p>
           </div>
+
           <template v-else>
             <h2 v-if="survey.length === 0" class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-              Create survey
+              Create a new survey
             </h2>
             <h2 v-else class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Survey</h2>
 
@@ -56,12 +58,12 @@
             </div>
 
             <!-- Add Question Button -->
-            <div class="mt-8 flex justify-end">
-              <button @click="addQuestion"
-                class="mb-4 rounded-lg bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-800">
-                Add Question
-              </button>
-            </div>
+            <div v-if="survey && survey.id" class="mt-8 flex justify-end">
+            <button @click="addQuestion"
+              class="mb-4 rounded-lg bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-800">
+              Add Question
+            </button>
+          </div>
 
             <!-- Survey Questions Table -->
             <div v-if="questions.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
@@ -94,15 +96,15 @@
                 </tbody>
               </table>
             </div>
-
-            <p v-else class="text-gray-500 mt-10 text-center">No questions added.</p>
-
+            <p v-else-if="survey.id || survey.questions === 0"class="text-gray-500 mt-10 text-center">No questions added.</p>
           </template>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+
 
 
 <script setup>
@@ -123,13 +125,18 @@ const description = ref('');
 import moment from 'moment';
 const showNotification = ref(false);
 const notificationMessage = ref('');
-
+const config = useRuntimeConfig();
 // Funktion til at oprette en ny survey
 const createSurvey = async () => {
   isLoading.value = true;
+
+  // Hent router instans
+  const router = useRouter(); 
+
   try {
-    const res = await $fetch(`http://127.0.0.1:8000/api/survey`, {
+    const res = await $fetch(`/survey`, {
       method: 'POST',
+      baseURL: config.public.baseURL,
       body: {
         name: name.value,
         description: description.value,
@@ -141,18 +148,29 @@ const createSurvey = async () => {
 
     // Tjek om oprettelse var succesfuld
     if (res && res.id) {
-      router.push({ path: "/survey", query: { id: res.id } });
+
+      await getSurvey(res.id );
+      notificationMessage.value = 'Survey created successfully!';
+      showNotification.value = true;
     } else {
-      hasError.value = true;
-      console.log('Failed to create survey.');
+
+      notificationMessage.value = 'Failed to create survey.';
+      showNotification.value = true;
     }
   } catch (error) {
-    console.error("Failed to create survey:", error);
-    hasError.value = true;
+
+    notificationMessage.value = 'Failed to create survey.';
+    showNotification.value = true;
   } finally {
     isLoading.value = false;
   }
+
+  setTimeout(() => {
+      showNotification.value = false;
+    }, 3000000);
 };
+
+
 const formatDate = (date) => {
   return moment(date).format('DD/MM/YYYY');
 }
@@ -161,12 +179,13 @@ const addQuestion = () => {
   console.log("Add Question clicked");
 };
 
-
 const updateSurvey = async (surveyId = route.query.id) => {
   isLoading.value = true;
   try {
-    const res = await $fetch(`http://127.0.0.1:8000/api/survey/${surveyId}`, {
+
+    const res = await $fetch(`/survey/${surveyId}`, {
       method: 'PUT',
+      baseURL: config.public.baseURL,
       body: {
         name: name.value,
         description: description.value,
@@ -195,16 +214,16 @@ const updateSurvey = async (surveyId = route.query.id) => {
     // Hide the notification after 3 seconds
     setTimeout(() => {
       showNotification.value = false;
-    }, 3000);
+    }, 3000000);
   }
 };
-
 
 // Funktion til at hente en eksisterende survey
 const getSurvey = async (surveyId = route.query.id) => {
   try {
-    const res = await $fetch(`http://127.0.0.1:8000/api/survey/${surveyId}`, {
+    const res = await $fetch(`/survey/${surveyId}`, {
       method: 'GET',
+      baseURL: config.public.baseURL, // Brug den konfigurerede baseURL
       headers: {
         'Authorization': `Bearer ${authToken.value}`,
       },

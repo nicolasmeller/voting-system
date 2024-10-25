@@ -5,15 +5,14 @@ export default defineNuxtConfig({
   ssr: false,
   runtimeConfig: {
     public: {
-      baseURL:  'http://127.0.0.1:8000/api/',
+      baseURL: 'http://127.0.0.1:8000/api/',
     },
   },
-  
   css: ['~/assets/css/tailwind.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
-  }
-})
+  },
+});

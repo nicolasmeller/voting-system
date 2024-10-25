@@ -68,9 +68,11 @@ const handleSubmit = async () => {
     error.value = null;
     success.value = null;
 
-    // Send login request
-    const res = await $fetch('http://127.0.0.1:8000/api/login', {
+    // Hent baseURL fra runtimeConfig
+    const config = useRuntimeConfig();
+    const res = await $fetch('/login', {
       method: 'post',
+      baseURL: config.public.baseURL, 
       body: { 
         email: email.value,
         password: password.value,
@@ -78,11 +80,8 @@ const handleSubmit = async () => {
     });
 
     router.push('/');
-    // Antag, at API'en returnerer et token
     authToken.value = res.token;
     success.value = 'Login successful!';
-
-
   } catch (err) {
     // Håndter fejl fra login request
     error.value = err;
@@ -90,5 +89,6 @@ const handleSubmit = async () => {
     console.error(error.value);
   }
 };
+
 
 </script>

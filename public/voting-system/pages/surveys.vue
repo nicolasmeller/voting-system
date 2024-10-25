@@ -98,15 +98,16 @@ const surveys = ref([]);
 const isLoading = ref(true); 
 const currentPage = ref(1);  
 const surveysPerPage = 10;   
-const searchQuery = ref(''); // New ref for search input
+const searchQuery = ref(''); 
 
 const authToken = useCookie('auth-token');
 const router = useRouter();  
-
+const config = useRuntimeConfig();
 const getSurveys = async () => {
   try {
-    const res = await $fetch('http://127.0.0.1:8000/api/survey', {
+    const res = await $fetch('/survey', {
       method: 'GET',
+      baseURL: config.public.baseURL,
       headers: {
         'Authorization': `Bearer ${authToken.value}`,
       },
