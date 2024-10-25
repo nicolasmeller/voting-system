@@ -59,11 +59,11 @@
 
             <!-- Add Question Button -->
             <div v-if="survey && survey.id" class="mt-8 flex justify-end">
-            <button @click="addQuestion"
-              class="mb-4 rounded-lg bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-800">
-              Add Question
-            </button>
-          </div>
+              <button @click="addQuestion"
+                class="mb-4 rounded-lg bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-800">
+                Add Question
+              </button>
+            </div>
 
             <!-- Survey Questions Table -->
             <div v-if="questions.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
@@ -96,7 +96,8 @@
                 </tbody>
               </table>
             </div>
-            <p v-else-if="survey.id || survey.questions === 0"class="text-gray-500 mt-10 text-center">No questions added.</p>
+            <p v-else-if="survey.id || survey.questions === 0" class="text-gray-500 mt-10 text-center">No questions
+              added.</p>
           </template>
         </div>
       </div>
@@ -111,7 +112,7 @@
 import { ref, onMounted } from 'vue';
 import { useCookie } from '#imports';
 
-import { useRouter, useRoute  } from 'vue-router'; 
+import { useRouter, useRoute } from 'vue-router';
 // Definer referencer til variabler
 const authToken = useCookie('auth-token');
 const survey = ref([]);
@@ -147,7 +148,7 @@ const createSurvey = async () => {
     // Tjek om oprettelse var succesfuld
     if (res && res.id) {
 
-      await getSurvey(res.id );
+      await getSurvey(res.id);
       notificationMessage.value = 'Survey created successfully!';
       showNotification.value = true;
     } else {
@@ -164,8 +165,8 @@ const createSurvey = async () => {
   }
 
   setTimeout(() => {
-      showNotification.value = false;
-    }, 3000);
+    showNotification.value = false;
+  }, 3000);
 };
 
 
@@ -174,7 +175,7 @@ const formatDate = (date) => {
 }
 
 const addQuestion = () => {
-  router.push({ path: "/question"});
+  router.push({ path: "/question" });
 };
 
 const updateSurvey = async (surveyId = route.query.id) => {
@@ -218,7 +219,7 @@ const getSurvey = async (surveyId = route.query.id) => {
   try {
     const res = await $fetch(`/survey/${surveyId}`, {
       method: 'GET',
-      baseURL: config.public.baseURL, 
+      baseURL: config.public.baseURL,
       headers: {
         'Authorization': `Bearer ${authToken.value}`,
       },
