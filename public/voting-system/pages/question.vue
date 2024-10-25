@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h1>Velkommen til Forsiden</h1>
-  </div>
+
+
+</div>
 </template>
 
 <script setup>

@@ -110,15 +110,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useCookie } from '#imports';
-import { useRoute } from 'vue-router';
-import notification from '~/components/notification.vue';
+
+import { useRouter, useRoute  } from 'vue-router'; 
 // Definer referencer til variabler
 const authToken = useCookie('auth-token');
 const survey = ref([]);
 const isLoading = ref(true);
 const hasError = ref(false);
-const route = useRoute();
-
+const router = useRouter();
+const route = useRoute()
 const questions = ref([]);
 const name = ref('');
 const description = ref('');
@@ -130,8 +130,6 @@ const config = useRuntimeConfig();
 const createSurvey = async () => {
   isLoading.value = true;
 
-  // Hent router instans
-  const router = useRouter(); 
 
   try {
     const res = await $fetch(`/survey`, {
@@ -167,7 +165,7 @@ const createSurvey = async () => {
 
   setTimeout(() => {
       showNotification.value = false;
-    }, 3000000);
+    }, 3000);
 };
 
 
@@ -176,7 +174,7 @@ const formatDate = (date) => {
 }
 
 const addQuestion = () => {
-  console.log("Add Question clicked");
+  router.push({ path: "/question"});
 };
 
 const updateSurvey = async (surveyId = route.query.id) => {
@@ -203,10 +201,8 @@ const updateSurvey = async (surveyId = route.query.id) => {
       showNotification.value = true;
     } else {
       hasError.value = true;
-      console.log('Failed to update survey.');
     }
   } catch (error) {
-    console.error("Failed to update survey:", error);
     hasError.value = true;
   } finally {
     isLoading.value = false;
@@ -214,40 +210,35 @@ const updateSurvey = async (surveyId = route.query.id) => {
     // Hide the notification after 3 seconds
     setTimeout(() => {
       showNotification.value = false;
-    }, 3000000);
+    }, 3000);
   }
 };
 
-// Funktion til at hente en eksisterende survey
 const getSurvey = async (surveyId = route.query.id) => {
   try {
     const res = await $fetch(`/survey/${surveyId}`, {
       method: 'GET',
-      baseURL: config.public.baseURL, // Brug den konfigurerede baseURL
+      baseURL: config.public.baseURL, 
       headers: {
         'Authorization': `Bearer ${authToken.value}`,
       },
     });
 
-    // Tjek om survey data er tilgængelige
     if (res.name) {
       survey.value = res;
       name.value = res.name;
       description.value = res.description;
       questions.value = res.questions;
-      console.log('Survey data:', res);
     } else {
       hasError.value = true;
     }
   } catch (error) {
-    console.error("Failed to fetch survey:", error);
     hasError.value = true;
   } finally {
     isLoading.value = false;
   }
 };
 
-// Kald `getSurvey` ved komponent-mount, hvis der findes en survey ID i URL'en
 onMounted(() => {
   if (route.query.id) {
     getSurvey();
