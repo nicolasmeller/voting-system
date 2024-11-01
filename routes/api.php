@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
 
     Route::post('/question', [QuestionController::class, 'create']);
+    Route::get('/question/{id}', [QuestionController::class, 'get']);
     Route::delete('/question/{id}', [QuestionController::class, 'delete'])->name('question_delete');
     Route::put('/question/{id}', [QuestionController::class, 'update'])->name('question_update');
 

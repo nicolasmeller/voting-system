@@ -39,6 +39,14 @@ class QuestionController
             return response()->json(['success'=> 'Question add to survey']);
 
     }
+
+
+    public function get(Request $request, $id){
+        $question = Question::where('id', $id)->first();
+
+        return response()->json($question);  
+    }
+
     public function update(Request $request, Int $id){
 
 

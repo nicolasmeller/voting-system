@@ -175,7 +175,12 @@ const formatDate = (date) => {
 }
 
 const addQuestion = () => {
-  router.push({ path: "/question" });
+  router.push({ path: "/question", query: { survey:  route.query.id }  });
+
+};
+const editQuestion = (id) => {
+  router.push({ path: "/question", query: { id:  id }  });
+
 };
 
 const updateSurvey = async (surveyId = route.query.id) => {
