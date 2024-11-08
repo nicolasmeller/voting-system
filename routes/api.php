@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\QuestionOptionController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\SurveyResultController;
 use App\Http\Controllers\UserController;
+use App\Models\SurveyResult;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/survey', [SurveyController::class, 'list'])->name('surveys');
     Route::post('/survey', [SurveyController::class, 'create'])->name('survey');
     Route::put('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
+    Route::post('/survey/submit-answer', [SurveyResultController::class, 'submitAnswer']);
 
     Route::post('/question', [QuestionController::class, 'create']);
     Route::get('/question/{id}', [QuestionController::class, 'get']);
@@ -32,5 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::put('/update', [UserController::class, 'update'])->name('update');
 
-
+    Route::prefix('questions/{questionId}/options')->group(function () {
+        Route::get('/', [QuestionOptionController::class, 'index']); 
+        Route::get('/{id}', [QuestionOptionController::class, 'show']); 
+        Route::post('/', [QuestionOptionController::class, 'store']); 
+        Route::put('/{id}', [QuestionOptionController::class, 'update']); 
+        Route::delete('/{id}', [QuestionOptionController::class, 'destroy']);
+    });
 });

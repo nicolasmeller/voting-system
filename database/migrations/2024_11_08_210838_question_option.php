@@ -11,24 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('question_options', function (Blueprint $table) {
             $table->id();
-
-            $table->string('question');
-            $table->string('answer')->nullable();
-            $table->enum('type', ['multiple_choice', 'true_false']);
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->text('text');
+            $table->boolean('is_correct')->default(false);
             $table->timestamps();
-            $table->softDeletes('deleted_at', precision: 0);
-
-
-        });
-    }
+        });    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('question_options');   
     }
 };
