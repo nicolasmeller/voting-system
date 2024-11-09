@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quiz_results', function (Blueprint $table) {
+        Schema::create('survey_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
+            $table->foreignId('survey_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('score');
             $table->integer('total_questions');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quiz_results');
+        Schema::dropIfExists('survey_results');
     }
 };

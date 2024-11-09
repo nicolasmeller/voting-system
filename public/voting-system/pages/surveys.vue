@@ -81,9 +81,15 @@
         </div>
       </div>
     </transition>
-
-    <!-- No Surveys Available Message -->
-    <p v-else class="text-gray-500 mt-10">Ingen surveys tilgængelige.</p>
+    <div v-else>
+      <button type="submit" @click="createSurvey()"
+              class="text-white hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800">
+              Create
+            </button>
+      <!-- No Surveys Available Message -->
+      <p  class="text-gray-500 mt-10">Ingen surveys tilgængelige.</p>
+      
+    </div>
   </div>
 </template>
 

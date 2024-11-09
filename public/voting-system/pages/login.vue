@@ -84,7 +84,7 @@ const handleSubmit = async () => {
     success.value = 'Login successful!';
   } catch (err) {
     // Håndter fejl fra login request
-    error.value = err;
+    error.value = "Email or Password is incorrect!";
     authToken.value = null;
     console.error(error.value);
   }

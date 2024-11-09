@@ -1,4 +1,3 @@
-vue
 <template>
   <div class="relative">
     <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50">
@@ -32,10 +31,13 @@ vue
               </div>
               <div class="col-span-2">
                 <label for="type" class="block text-sm font-medium text-gray-900 dark:text-white">Type</label>
-                <input type="text" id="type" v-model="type" class="w-full rounded-lg border p-2.5" maxlength="255" />
+                <select v-model="type" id="type" class="w-full rounded-lg border p-2.5">
+                  <option v-for="questionType in questionTypes" :key="questionType.value" :value="questionType.value">
+                    {{ questionType.label }}
+                  </option>
+                </select>
               </div>
             </div>
-
             <button type="submit" class="w-full rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white">Save Question</button>
           </form>
         </div>
@@ -60,6 +62,13 @@ const config = useRuntimeConfig();
 const router = useRouter();
 const route = useRoute();
 
+// Definer spørgsmålstyperne
+const questionTypes = [
+  { label: 'Multiple Choice', value: 'multiple_choice' },
+  { label: 'True/False', value: 'true_false' },
+  { label: 'Short Answer', value: 'short_answer' },
+];
+
 const getQuestion = async () => {
   try {
     const res = await $fetch(`/question/${route.query.id}`, {
@@ -71,7 +80,6 @@ const getQuestion = async () => {
     });
 
     if (res) {
-      
       question.value = res.question;
       answer.value = res.answer;
       type.value = res.type;
@@ -88,12 +96,10 @@ const createOrUpdateQuestion = async () => {
   isLoading.value = true;
 
   try {
-
     const survey_id = route.query.survey ?? null;
     const question_id = route.query.id ?? null;
-    const method = route.query.id ? 'PUT' : 'POST'; // Determine the request method based on the presence of an ID
+    const method = route.query.id ? 'PUT' : 'POST';
     const url = route.query.id ? `/question/${route.query.id}` : '/question';
-    
 
     const res = await $fetch(url, {
       method,
@@ -112,11 +118,10 @@ const createOrUpdateQuestion = async () => {
     notificationMessage.value = res ? 'Question saved successfully!' : 'Failed to save question';
     showNotification.value = true;
 
-    if(survey_id){
-      router.push({ path: "/survey", query: { id:  survey_id }  });
-    }
-    else {
-      router.push({ path: "/question", query: { id:  question_id }  });
+    if (survey_id) {
+      router.push({ path: "/survey", query: { id: survey_id } });
+    } else {
+      router.push({ path: "/question", query: { id: question_id } });
     }
   } catch (error) {
     notificationMessage.value = 'Failed to save question';
@@ -130,7 +135,7 @@ onMounted(() => {
   if (route.query.id) {
     getQuestion(); // Load the question if editing
   } else {
-    isLoading.value = false; // No question to load, just set loading to false
+    isLoading.value = false;
   }
 });
 </script>

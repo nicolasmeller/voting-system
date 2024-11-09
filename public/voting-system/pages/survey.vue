@@ -29,7 +29,7 @@
             <h2 v-else class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Survey</h2>
 
             <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12">
-              <form @submit.prevent="createSurvey"
+              <form
                 class="w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
                 <div class="mb-6 grid grid-cols-2 gap-4">
                   <div class="col-span-2 sm:col-span-1">
@@ -49,11 +49,18 @@
 
                 <button type="submit"
                   class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  v-if="survey.length === 0">Create</button>
+                  v-if="survey.length === 0" @click="createSurvey()">Create</button>
+                  <div v-else class="flex flex-row space-x-4">
+              <button type="submit" @click="updateSurvey(survey.id)"
+                class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                Update
+              </button>
+              <button type="submit" @click="deleteSurvey(survey.id)"
+                class="flex w-full items-center justify-center rounded-lg bg-red-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                Delete
+              </button>
+            </div>
 
-                <button type="submit" @click="updateSurvey(survey.id)"
-                  class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  v-else>Update</button>
               </form>
             </div>
 
@@ -182,6 +189,44 @@ const editQuestion = (id) => {
   router.push({ path: "/question", query: { id:  id }  });
 
 };
+
+const deleteSurvey = async (surveyId) => {
+  isLoading.value = true;
+  try {
+
+    const res = await $fetch(`/survey/${surveyId}`, {
+      method: 'DELETE',
+      baseURL: config.public.baseURL,
+     
+      headers: {
+        'Authorization': `Bearer ${authToken.value}`,
+      },
+    });
+
+    if (res) {
+
+      notificationMessage.value = 'Survey deleted successfully!';
+      showNotification.value = true;
+      router.push({ path: "/surveys"  });
+
+
+    } else {
+      hasError.value = true;
+    }
+  } catch (error) {
+    hasError.value = true;
+  } finally {
+    isLoading.value = false;
+
+    // Hide the notification after 3 seconds
+    setTimeout(() => {
+      showNotification.value = false;
+    }, 3000);
+  }
+};
+
+
+
 
 const updateSurvey = async (surveyId = route.query.id) => {
   isLoading.value = true;

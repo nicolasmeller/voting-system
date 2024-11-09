@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test', function () {
     return response()->json(['message' => 'Det virker!']);
 });
+
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'create']);
 
@@ -22,9 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout/all', [AuthController::class, 'logout_all']);
 
     Route::get('/survey/{id}', [SurveyController::class, 'get'])->name('survey');
+    Route::put('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
+    Route::delete('/survey/{id}', [SurveyController::class, 'delete'])->name('survey_update');
     Route::get('/survey', [SurveyController::class, 'list'])->name('surveys');
     Route::post('/survey', [SurveyController::class, 'create'])->name('survey');
-    Route::put('/survey/{id}', [SurveyController::class, 'update'])->name('survey_update');
     Route::post('/survey/submit-answer', [SurveyResultController::class, 'submitAnswer']);
 
     Route::post('/question', [QuestionController::class, 'create']);

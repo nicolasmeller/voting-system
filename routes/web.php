@@ -11,15 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if(Auth::User()){
-        return view('users.dashboard');
-    }
-    return view('index');
-})->name('home');
-
-Route::get('/dashboard', function () {
-    return view('users.dashboard');
-})->name('dashboard');
+     return null;
+});
 
 
 
